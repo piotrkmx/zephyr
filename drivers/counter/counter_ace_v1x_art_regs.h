@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) 2022 Intel Corporation
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#ifndef __COUNTER_ACE_V1X_ART_REGS__
+#define __COUNTER_ACE_V1X_ART_REGS__
+
+#if CONFIG_ACE_V1X_ART_COUNTER
+
+#define ACE_ART_COUNTER_ID DT_NODELABEL(ace_art_counter)
+#define ACE_TIMESTAMP_ID DT_NODELABEL(ace_timestamp)
+
+#define ACE_ARTCS	(DT_REG_ADDR(ACE_ART_COUNTER_ID))
+#define ACE_ARTCS_LO ACE_ARTCS
+#define ACE_ARTCS_HI (ACE_ARTCS_LO + 0x04)
+
+#define ACE_TSCTRL	(DT_REG_ADDR(ACE_TIMESTAMP_ID))
+#define ACE_TSCTRL_CDMAS_OFFSET		0x00
+#define ACE_TSCTRL_ODTS_OFFSET		0x05
+#define ACE_TSCTRL_LWCS_OFFSET		0x06
+#define ACE_TSCTRL_HHTSE_OFFSET		0x07
+#define ACE_TSCTRL_CLNKS_OFFSET		0x0A
+#define ACE_TSCTRL_DMATS_OFFSET		0x0C
+#define ACE_TSCTRL_IONTE_OFFSET		0x1E
+#define ACE_TSCTRL_NTK_OFFSET		0x1F
+
+#endif
+
+#endif /*__COUNTER_ACE_V1X_ART_REGS__*/
