@@ -63,7 +63,16 @@ struct adsp_debug_window {
 	uint8_t slots[ADSP_DW_SLOT_COUNT][ADSP_DW_SLOT_SIZE];
 } __packed;
 
+typedef struct byte_array {
+	uint32_t* data;
+	uint32_t size;
+} byte_array_t;
 
+int debug_memory_window_init(const struct device *d);
+int debug_memory_window_map_slot(uint32_t resource_id, void* virtual_memory_address,
+				uint32_t slot_id);
+int debug_memory_window_unmap_slot(uint32_t resource_id, void* virtual_memory_address,
+            uint32_t slot_id);
 
 #define WIN2_MBASE DT_REG_ADDR(DT_PHANDLE(DT_NODELABEL(mem_window2), memory))
 

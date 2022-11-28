@@ -66,6 +66,9 @@ struct adsp_debug_slot {
 
 static void mtrace_init(void)
 {
+	volatile static int stop2 = 1;
+	while (stop2);
+
 	if (ADSP_DW->descs[0].type == MTRACE_LOGGING_SLOT_TYPE(MTRACE_CORE)) {
 		return;
 	}

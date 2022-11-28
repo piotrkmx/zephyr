@@ -636,6 +636,108 @@ int sys_mm_drv_move_array(void *virt_old, size_t size, void *virt_new,
 	return ret;
 }
 
+int sys_mm_drv_mirror_region(void *virt_old, size_t size, void *virt_new,
+			   uintptr_t phys_new)
+{
+	k_spinlock_key_t key;
+	size_t offset;
+	int ret = 0;
+
+  //  volatile static int stop11=1;
+   // while (stop11);
+
+	virt_new = z_soc_cached_ptr(virt_new);
+	virt_old = z_soc_cached_ptr(virt_old);
+
+	CHECKIF(!sys_mm_drv_is_virt_addr_aligned(virt_old) ||
+		!sys_mm_drv_is_virt_addr_aligned(virt_new) ||
+		!sys_mm_drv_is_size_aligned(size)) {
+		ret = -EINVAL;
+		goto out;
+	}
+	/*
+	 * The function's behavior has been updated to accept
+	 * phys_new == NULL and get the physical addresses from
+	 * the actual TLB instead of from the caller.
+	 */
+
+	if (phys_new != POINTER_TO_UINT(NULL) &&
+	    !sys_mm_drv_is_addr_aligned(phys_new)) {
+	    volatile static int stop0=1;
+	    while (stop0);
+		ret = -EINVAL;
+		goto out;
+	}
+
+	key = k_spin_lock(&sys_mm_drv_common_lock);
+
+	//int mapped = sys_mm_drv_is_virt_region_mapped(virt_old, size);
+	//int unmapped = sys_mm_drv_is_virt_region_unmapped(virt_new, size);
+
+	if (!sys_mm_drv_is_virt_region_mapped(virt_old, size) /*||
+	    !sys_mm_drv_is_virt_region_unmapped(virt_new, size)*/) {
+	    volatile static int stop01=1;
+	    while (stop01);
+		ret = -EINVAL;
+		goto unlock_out;
+	}
+
+	for (offset = 0; offset < size; offset += CONFIG_MM_DRV_PAGE_SIZE) {
+		uint8_t *va_old = (uint8_t *)virt_old + offset;
+		uint8_t *va_new = (uint8_t *)virt_new + offset;
+		uintptr_t pa;
+		uint32_t flags;
+		int ret2;
+
+		ret2 = sys_mm_drv_page_flag_get(va_old, &flags);
+		if (ret2 != 0) {
+		    volatile static int stop02=1;
+		    while (stop02);
+			__ASSERT(false, "cannot query page flags %p\n", va_old);
+			ret = ret2;
+			goto unlock_out;
+		}
+
+		ret2 = sys_mm_drv_page_phys_get(va_old, &pa);
+		if (ret2 != 0) {
+		    volatile static int stop03=1;
+		    while (stop03);
+			__ASSERT(false, "cannot query page paddr %p\n", va_old);
+			ret = ret2;
+			goto unlock_out;
+		}
+
+		/*
+		 * Only map the new page when we can retrieve
+		 * flags and phys addr of the old mapped page as We don't
+		 * want to map with unknown random flags.
+		 */
+
+		ret2 = sys_mm_drv_map_page(va_new, pa, flags);
+
+		if (ret2 != 0) {
+		    volatile static int stop04=1;
+		    while (stop04);
+			__ASSERT(false, "cannot map 0x%lx to %p\n", pa, va_new);
+			ret = ret2;
+		}
+
+	}
+
+unlock_out:
+	k_spin_unlock(&sys_mm_drv_common_lock, key);
+
+out:
+	/*
+	 * Since move is done in virtual space, need to
+	 * flush the cache to make sure the backing physical
+	 * pages have the new data.
+	 */
+	z_xtensa_cache_flush(virt_new, size);
+	z_xtensa_cache_flush_inv(virt_old, size);
+	return ret;
+}
+
 static int sys_mm_drv_mm_init(const struct device *dev)
 {
 	int ret;

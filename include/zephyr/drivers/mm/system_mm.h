@@ -294,6 +294,8 @@ int sys_mm_drv_move_region(void *virt_old, size_t size, void *virt_new,
 int sys_mm_drv_move_array(void *virt_old, size_t size, void *virt_new,
 			  uintptr_t *phys_new, size_t phys_cnt);
 
+int sys_mm_drv_mirror_region(void *virt_old, size_t size, void *virt_new,
+			   uintptr_t phys_new);
 
 /**
  * @brief Update memory page flags

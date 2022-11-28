@@ -191,6 +191,7 @@
 			compatible = "intel,adsp-mem-window";
 			reg = <0x70210 0x8>;
 			memory = <&sram0>;
+			initialize;
 		};
 
 		mem_window3: mem_window@70218 {

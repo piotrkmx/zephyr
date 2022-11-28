@@ -11,6 +11,8 @@
 #include <adsp-vectors.h>
 #include <mem_window.h>
 
+
+
 #define L2_SRAM_BASE (DT_REG_ADDR(DT_NODELABEL(sram0)))
 #define L2_SRAM_SIZE (DT_REG_SIZE(DT_NODELABEL(sram0)))
 
@@ -37,7 +39,6 @@
 
 #define ADSP_L1_CACHE_PREFCTL_VALUE 0x1038
 
-
 /* L1 init */
 #define ADSP_L1CC_ADDR                       (0x1FE80080)
 #define ADSP_CxL1CCAP_ADDR                   (ADSP_L1CC_ADDR + 0x0000)
@@ -61,6 +62,79 @@
 /* L2 Local Memory Management */
 
 /* These registers are for the L2 memory control and status. */
+
+enum errorCode {
+    ADSP_SUCCESS = 0,
+    ADSP_NOT_FOUND = 9,
+    ADSP_INVALID_ALIGNMENT = 22,
+    ADSP_MM_VMA_NOT_LOCATED_IN_L2HP = 500,
+    ADSP_MM_PROCAL_OVERRIDE_NOT_SUPPORTED = 501,
+    ADSP_MM_INVALID_SIZE_FOR_DMA_ALLOCATION = 502,
+    ADSP_MM_INVALID_ATTRIBUTE = 503,
+
+    ADSP_MM_L2HP_INIT_ERROR = 510,
+    ADSP_MM_L2HP_INVALID_ALIGNMENT = 520,
+    ADSP_MM_L2LP_INVALID_ALIGNMENT = 521,
+
+    ADSP_MM_INVALID_REQUEST_L2HP = 522,
+    ADSP_MM_INVALID_REQUEST_L2LP = 523,
+    ADSP_MM_INVALID_REQUEST_L2RF = 524,
+    ADSP_MM_INVALID_REQUEST_DDR = 525,
+    ADSP_MM_INVALID_REQUEST_EXTMEM = 526,
+    ADSP_MM_INVALID_REQUEST_L1SRAM = 527,
+    ADSP_MM_INVALID_REQUEST_SMEM = 528,
+
+    ADSP_MM_DEADLOCK_ON_SWAP = 530,
+    ADSP_MM_ADDRESS_NO_ALIGNED_ON_SWAP = 531,
+    ADSP_MM_SIZE_NO_ALIGNED_ON_SWAP = 532,
+    ADSP_MM_UNEXPECTED_CRITICAL_SECTION = 533,
+
+    ADSP_MM_NOT_LOCATED_IN_L2RF = 560,          ///< Given address is not located in expected memory region (L2RF)
+    ADSP_MM_NOT_LOCATED_IN_LPSRAM = 561,        ///< Given address is not located in expected memory region (LPSRAM)
+
+    ADSP_MM_INVALID_L2HP_CONFIG = 562, ///< Given configuration is not valid.
+    ADSP_MM_INVALID_L2LP_CONFIG = 563, ///< Given configuration is not valid.
+    ADSP_MM_INVALID_L2RF_CONFIG = 564, ///< Given configuration is not valid.
+    ADSP_MM_INVALID_EXTMEM_CONFIG = 565, ///< Given configuration is not valid.
+    ADSP_MM_INVALID_DDR_CONFIG = 566, ///< Given configuration is not valid.
+    ADSP_MM_INVALID_L1SRAM_CONFIG = 567, ///< Given configuration is not valid.
+
+    ADSP_MM_L2HP_NOT_MAPPED = 568, ///< Cannot map memory.
+    ADSP_MM_L2LP_NOT_MAPPED = 569, ///< Cannot map memory.
+    ADSP_MM_L2RF_NOT_MAPPED = 570, ///< Cannot map memory.
+    ADSP_MM_EXTMEM_NOT_MAPPED = 571, ///< Cannot map memory.
+    ADSP_MM_DDR_NOT_MAPPED = 572, ///< Cannot map memory.
+    ADSP_MM_L1SRAM_NOT_MAPPED = 573, ///< Cannot map memory.
+
+    ADSP_MM_CANNOT_REGISTER_MP = 574, ///< Cannot register memory pool.
+    ADSP_MM_CANNOT_ALLOCATE_MP = 575, ///< Cannot allocate memory pool.
+
+    ADSP_MM_CANNOT_ALLOCATE_L2HP = 576, ///< Cannot allocate memory.
+    ADSP_MM_CANNOT_ALLOCATE_L2LP = 577, ///< Cannot allocate memory.
+    ADSP_MM_CANNOT_ALLOCATE_L2RF = 578, ///< Cannot allocate memory.
+    ADSP_MM_CANNOT_ALLOCATE_EXTMEM = 579, ///< Cannot allocate memory.
+    ADSP_MM_CANNOT_ALLOCATE_DDR = 580, ///< Cannot allocate memory.
+    ADSP_MM_CANNOT_ALLOCATE_L1SRAM = 581, ///< Cannot allocate memory.
+
+    ADSP_MM_CANNOT_FREE_L2HP = 582, ///< Cannot allocate memory.
+    ADSP_MM_CANNOT_FREE_L2LP = 583, ///< Cannot allocate memory.
+    ADSP_MM_CANNOT_FREE_L2RF = 584, ///< Cannot allocate memory.
+    ADSP_MM_CANNOT_FREE_EXTMEM = 585, ///< Cannot allocate memory.
+    ADSP_MM_CANNOT_FREE_DDR = 586, ///< Cannot allocate memory.
+    ADSP_MM_CANNOT_FREE_L1SRAM = 587, ///< Cannot allocate memory.
+
+    ADSP_MM_L2HP_CANNOT_MIRROR = 588,  ///< Cannot mirror memory.
+
+    ADSP_MM_HW_BUFFER_TOO_SMALL = 590,
+    ADSP_MM_HW_BUFFER_NOT_ALLOCATED = 591,
+
+    ADSP_MM_INVALID_SMEM_CONFIG = 592, ///< Given configuration is not valid.
+    ADSP_MM_SMEM_NOT_MAPPED = 593, ///< Cannot map memory.
+    ADSP_MM_CANNOT_ALLOCATE_SMEM = 594, ///< Cannot allocate memory.
+    ADSP_MM_CANNOT_FREE_SMEM = 595, ///< Cannot free memory.
+    ADSP_MM_SMEM_INIT_ERROR = 596
+};
+
 #define DFL2MM_REG 0x71d00
 
 struct ace_l2mm {

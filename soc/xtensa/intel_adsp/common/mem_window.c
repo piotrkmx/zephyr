@@ -20,10 +20,13 @@
 
 __imr int mem_win_init(const struct device *dev)
 {
+	volatile static int stopI1 = 1;
+	while (stopI1);
+
 	const struct mem_win_config *config = dev->config;
 
 	if (config->initialize) {
-		bbzero((void *)config->mem_base, config->size);
+	//	bbzero((void *)config->mem_base, config->size);
 	}
 
 	sys_write32(config->size | 0x7, DMWLO(config->base_addr));
@@ -49,15 +52,15 @@ __imr int mem_win_init(const struct device *dev)
 	DEVICE_DT_DEFINE(MEM_WINDOW_NODE(n), mem_win_init, NULL, NULL, &mem_win_config_##n, EARLY, \
 			 CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, NULL);
 
-#if DT_NODE_HAS_STATUS(MEM_WINDOW_NODE(0), okay)
+//#if DT_NODE_HAS_STATUS(MEM_WINDOW_NODE(0), okay)
 MEM_WINDOW_DEFINE(0)
-#endif
-#if DT_NODE_HAS_STATUS(MEM_WINDOW_NODE(1), okay)
+//#endif
+//#if DT_NODE_HAS_STATUS(MEM_WINDOW_NODE(1), okay)
 MEM_WINDOW_DEFINE(1)
-#endif
-#if DT_NODE_HAS_STATUS(MEM_WINDOW_NODE(2), okay)
+//#endif
+//#if DT_NODE_HAS_STATUS(MEM_WINDOW_NODE(2), okay)
 MEM_WINDOW_DEFINE(2)
-#endif
-#if DT_NODE_HAS_STATUS(MEM_WINDOW_NODE(3), okay)
+//#endif
+//#if DT_NODE_HAS_STATUS(MEM_WINDOW_NODE(3), okay)
 MEM_WINDOW_DEFINE(3)
-#endif
+//#endif
