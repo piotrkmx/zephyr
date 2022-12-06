@@ -60,6 +60,13 @@ if LOG
 config LOG_BACKEND_ADSP
 	default y
 
+config HP_SRAM_RESERVE
+	default 131072
+
+config MEMORY_WIN_2_SIZE
+	int "Size of memory window 2"
+	default 32768
+
 endif # LOG
 
 source "soc/xtensa/intel_adsp/ace/Kconfig.defconfig.ace*"

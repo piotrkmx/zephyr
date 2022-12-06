@@ -9,6 +9,10 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <adsp_types.h>
+
+void mtrace_init(void);
+struct byte_array mtrace_get_buffer(void);
 
 /**
  *@brief mtracelogger requires a hook for IPC messages

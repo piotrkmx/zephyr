@@ -151,4 +151,8 @@ source "drivers/xen/Kconfig"
 
 source "drivers/fuel_gauge/Kconfig"
 
+source "drivers/memory_window/Kconfig"
+
+source "drivers/telemetry/Kconfig"
+
 endmenu

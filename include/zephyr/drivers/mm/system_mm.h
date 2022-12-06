@@ -259,6 +259,9 @@ int sys_mm_drv_remap_region(void *virt_old, size_t size, void *virt_new);
 int sys_mm_drv_move_region(void *virt_old, size_t size, void *virt_new,
 			   uintptr_t phys_new);
 
+int sys_mm_drv_mirror_region(void *virt_old, size_t size, void *virt_new,
+			   uintptr_t phys_new);
+
 /**
  * @brief Physically move memory, with copy
  *
